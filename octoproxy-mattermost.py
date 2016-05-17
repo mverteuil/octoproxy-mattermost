@@ -104,15 +104,14 @@ class PullRequest(Payload):
 def pull_request_receiver(event_type, event_data):
     payload_factory = PullRequest(event_data)
     message = getattr(payload_factory, event_data['action'])()
-    requests.post(MATTERMOST_WEBHOOK, data={'payload': message})
+    requests.post(MATTERMOST_WEBHOOK, json={'text': message})
 
 
 @octoproxy.events.register_event('issue_comment', repository='*')
 def issue_comment_receiver(event_type, event_data):
     payload_factory = IssueComment(event_data)
     message = getattr(payload_factory, event_data['action'])()
-    requests.post(MATTERMOST_WEBHOOK, data={'payload': message})
-
+    requests.post(MATTERMOST_WEBHOOK, json={'text': message})
 
 
 if __name__ == '__main__':
