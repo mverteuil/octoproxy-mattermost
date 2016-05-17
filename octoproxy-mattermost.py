@@ -44,6 +44,26 @@ class Payload(object):
         return result
 
 
+class IssueComment(Payload):
+    """ Models issue payloads.
+
+    Borrowed from: https://github.com/softdevteam/mattermost-github-integration/blob/master/payload.py
+    """
+    def __init__(self, data):
+        Payload.__init__(self, data)
+        self.number = self.data['issue']['number']
+        self.title  = self.data['issue']['title']
+        self.body   = self.data['comment']['body']
+        self.url    = self.data['comment']['html_url']
+
+    def created(self):
+        body = self.preview(self.body)
+        msg = """%s commented on an issue [#%s %s](%s) in %s:\n > %s""" % (
+            self.user_link(), self.number, self.title,
+            self.url, self.repo_link(), body)
+        return msg
+
+
 class PullRequest(Payload):
     """ Models pull request payloads.
 
@@ -81,9 +101,15 @@ class PullRequest(Payload):
 
 
 @octoproxy.events.register_event('pull_request', repository='*')
-@octoproxy.events.register_event('issue_comment', repository='*')
 def pull_request_receiver(event_type, event_data):
     payload_factory = PullRequest(event_data)
+    message = getattr(payload_factory, event_data['action'])()
+    requests.post(MATTERMOST_WEBHOOK, data={'payload': message})
+
+
+@octoproxy.events.register_event('issue_comment', repository='*')
+def issue_comment_receiver(event_type, event_data):
+    payload_factory = IssueComment(event_data)
     message = getattr(payload_factory, event_data['action'])()
     requests.post(MATTERMOST_WEBHOOK, data={'payload': message})
 
