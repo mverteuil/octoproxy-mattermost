@@ -81,6 +81,7 @@ class PullRequest(Payload):
 
 
 @octoproxy.events.register_event('pull_request', repository='*')
+@octoproxy.events.register_event('issue_comment', repository='*')
 def pull_request_receiver(event_type, event_data):
     payload_factory = PullRequest(event_data)
     message = getattr(payload_factory, event_data['action'])()
