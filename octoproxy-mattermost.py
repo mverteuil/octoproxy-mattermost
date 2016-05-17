@@ -89,4 +89,4 @@ def pull_request_receiver(event_type, event_data):
 
 
 if __name__ == '__main__':
-    octoproxy.app.run()
+    octoproxy.app.run('0.0.0.0', port=5050)
