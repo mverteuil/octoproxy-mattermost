@@ -13,6 +13,7 @@ OPENED_COLOR = os.environ.get("OCTOPROXY_OPENED_COLOR", "#F86864")
 ASSIGNED_COLOR = os.environ.get("OCTOPROXY_ASSIGNED_COLOR", "#F8A864")
 COMMENTED_COLOR = os.environ.get("OCTOPROXY_COMMENTED_COLOR", "#3D9296")
 MERGED_COLOR = os.environ.get("OCTOPROXY_MERGED_COLOR", "#4EC356")
+DEBUG_ONLY = os.environ.get("DEBUG_ONLY", 0)
 
 
 def add_payload_boilerplate(f):
@@ -90,7 +91,7 @@ class Payload(object):
 
     @property
     def labels(self):
-        return ", ".join(label.get("name") for label in self.data.get("labels", [{"name": "(None)"}]))
+        return ", ".join(label.get("name") for label in self.data['issue'].get("labels", [{"name": "(None)"}]))
 
     @abc.abstractproperty
     def title(self):
@@ -292,3 +293,7 @@ def issue_comment_receiver(event_type, event_data):
 
 if __name__ == "__main__":
     octoproxy.app.run("0.0.0.0", port=5050)
+    if DEBUG_ONLY:
+        def debug_post(_, payload):
+            print payload
+        requests.post = debug_post
