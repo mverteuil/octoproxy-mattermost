@@ -69,21 +69,21 @@ class Payload(object):
 
     @property
     def assignee_name(self):
-        if "assignee" in self.data:
+        if self.data.get('assignee'):
             return self.data["assignee"]["login"]
         else:
             return "(Nobody)"
 
     @property
     def assignee_avatar(self):
-        if "assignee" in self.data:
+        if self.data.get('assignee'):
             return self.data["assignee"]["avatar_url"] + "&s=18"
         else:
             return ""
 
     @property
     def assignee_url(self):
-        if "assignee" in self.data:
+        if self.data.get('assignee'):
             return self.data["assignee"]["html_url"]
         else:
             return ""
