@@ -69,15 +69,28 @@ class Payload(object):
 
     @property
     def assignee_name(self):
-        return self.data["assignee"]["login"]
+        if "assignee" in self.data:
+            return self.data["assignee"]["login"]
+        else:
+            return ""
 
     @property
     def assignee_avatar(self):
-        return self.data["assignee"]["avatar_url"] + "&s=18"
+        if "assignee" in self.data:
+            return self.data["assignee"]["avatar_url"] + "&s=18"
+        else:
+            return ""
 
     @property
     def assignee_url(self):
-        return self.data["assignee"]["html_url"]
+        if "assignee" in self.data:
+            return self.data["assignee"]["html_url"]
+        else:
+            return ""
+
+    @property
+    def labels(self):
+        return ", ".join(label.get("name") for label in self.data.get("labels"))
 
     @abc.abstractproperty
     def title(self):
@@ -178,18 +191,6 @@ class PullRequest(Payload):
     @property
     def url(self):
         return self.data["pull_request"]["html_url"]
-
-    @property
-    def assignee_name(self):
-        return self.data["assignee"]["login"]
-
-    @property
-    def assignee_avatar(self):
-        return self.data["assignee"]["avatar_url"] + "&s=17"
-
-    @property
-    def assignee_url(self):
-        return self.data["assignee"]["html_url"]
 
     @property
     def action(self):
