@@ -252,6 +252,9 @@ class PullRequest(Payload):
             ]
         }
 
+    def reopened(self):
+        return self.opened()
+
     @add_payload_boilerplate
     def assigned(self):
         assignee = self._create_user_link(self.assignee_name, self.assignee_url, self.assignee_avatar)
