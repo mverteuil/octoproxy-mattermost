@@ -71,7 +71,6 @@ class Payload(object):
     @property
     def sender_url(self):
         return self.data["sender"]["html_url"]
-            return ""
 
     @property
     def labels(self):
@@ -148,6 +147,10 @@ class IssueComment(Payload):
         else:
             return ""
 
+    @property
+    def labels(self):
+        return ", ".join(label.get("name") for label in self.data['issue'].get("labels", [{"name": "(None)"}]))
+
     @add_payload_boilerplate
     def created(self):
         preview = self.preview(self.body)
@@ -218,6 +221,10 @@ class PullRequest(Payload):
             return self.data["pull_request"]["assignee"]["html_url"]
         else:
             return ""
+
+    @property
+    def labels(self):
+        return ", ".join(label.get("name") for label in self.data['pull_request'].get("labels", [{"name": "(None)"}]))
 
     @property
     def action(self):
