@@ -88,6 +88,12 @@ class Payload(object):
     def url(self):
         return NotImplemented
 
+    @property
+    def labels(self):
+        labels = self.data['issue'].get('labels') if self.data.get('issue') else self.data['pull_request'].get('labels')
+        labels = labels or [{"name": "(None)"}]
+        return ", ".join(label.get("name") for label in labels)
+
     def preview(self, text):
         if not text:
             return text
@@ -142,10 +148,6 @@ class IssueComment(Payload):
             return self.data["issue"]["assignee"]["html_url"]
         else:
             return ""
-
-    @property
-    def labels(self):
-        return ", ".join(label.get("name") for label in self.data['issue'].get("labels", [{"name": "(None)"}]))
 
     @add_payload_boilerplate
     def created(self):
@@ -217,10 +219,6 @@ class PullRequest(Payload):
             return self.data["pull_request"]["assignee"]["html_url"]
         else:
             return ""
-
-    @property
-    def labels(self):
-        return ", ".join(label.get("name") for label in self.data['pull_request'].get("labels", [{"name": "(None)"}]))
 
     @property
     def action(self):
