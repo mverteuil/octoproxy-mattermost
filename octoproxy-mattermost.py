@@ -2,9 +2,13 @@ import abc
 import functools
 import os
 
-import requests
-
 import octoproxy
+
+if bool(os.environ.get("DEBUG_ONLY", False)):
+    from requests import post
+else:
+    def post(_, payload):
+        print payload
 
 
 MATTERMOST_WEBHOOK = os.environ.get("MATTERMOST_WEBHOOK")
@@ -281,19 +285,15 @@ class PullRequest(Payload):
 def pull_request_receiver(event_type, event_data):
     payload_factory = PullRequest(event_data)
     payload = getattr(payload_factory, event_data["action"])()
-    requests.post(MATTERMOST_WEBHOOK, json=payload)
+    post(MATTERMOST_WEBHOOK, json=payload)
 
 
 @octoproxy.events.register_event("issue_comment", repository="*")
 def issue_comment_receiver(event_type, event_data):
     payload_factory = IssueComment(event_data)
     payload = getattr(payload_factory, event_data["action"])()
-    requests.post(MATTERMOST_WEBHOOK, json=payload)
+    post(MATTERMOST_WEBHOOK, json=payload)
 
 
 if __name__ == "__main__":
     octoproxy.app.run("0.0.0.0", port=5050)
-    if DEBUG_ONLY:
-        def debug_post(_, payload):
-            print payload
-        requests.post = debug_post
