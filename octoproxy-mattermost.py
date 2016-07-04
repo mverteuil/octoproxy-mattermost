@@ -67,6 +67,18 @@ class Payload(object):
     def sender_url(self):
         return self.data["sender"]["html_url"]
 
+    @property
+    def assignee_name(self):
+        return self.data["assignee"]["login"]
+
+    @property
+    def assignee_avatar(self):
+        return self.data["assignee"]["avatar_url"] + "&s=18"
+
+    @property
+    def assignee_url(self):
+        return self.data["assignee"]["html_url"]
+
     @abc.abstractproperty
     def title(self):
         return NotImplemented
