@@ -4,7 +4,7 @@ import os
 
 import octoproxy
 
-if bool(os.environ.get("DEBUG_ONLY", False)):
+if not bool(os.environ.get("DEBUG_ONLY", False)):
     from requests import post
 else:
     def post(*args, **kwargs):
