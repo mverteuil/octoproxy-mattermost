@@ -17,7 +17,6 @@ OPENED_COLOR = os.environ.get("OCTOPROXY_OPENED_COLOR", "#F86864")
 ASSIGNED_COLOR = os.environ.get("OCTOPROXY_ASSIGNED_COLOR", "#F8A864")
 COMMENTED_COLOR = os.environ.get("OCTOPROXY_COMMENTED_COLOR", "#3D9296")
 MERGED_COLOR = os.environ.get("OCTOPROXY_MERGED_COLOR", "#4EC356")
-DEBUG_ONLY = os.environ.get("DEBUG_ONLY", 0)
 
 
 def add_payload_boilerplate(f):
@@ -166,9 +165,6 @@ class IssueComment(Payload):
             "text": preview,
             "fields": [
                 {"short": True,
-                 "title": "Author",
-                 "value": self.sender_name},
-                {"short": True,
                  "title": "Assignee",
                  "value": self.assignee_name},
                 {"short": True,
@@ -238,38 +234,8 @@ class PullRequest(Payload):
             "author_link": self.sender_url,
             "title": "#{self.number} {self.title}".format(self=self),
             "title_link": self.url,
-            "text": preview,
+            "text": "New Pull Request",
             "fields": [
-                {"short": True,
-                 "title": "Author",
-                 "value": self.sender_name},
-                {"short": True,
-                 "title": "Assignee",
-                 "value": self.assignee_name},
-                {"short": True,
-                 "title": "Labels",
-                 "value": self.labels}
-            ]
-        }
-
-    @add_payload_boilerplate
-    def opened(self):
-        preview = self.preview(self.body)
-        fallback = ("{self.user_link} opened new pull request [#{self.number} {self.title}]({self.url}) "
-                    "in {self.repo_link}:\n > {preview}").format(self=self, preview=preview)
-        return {
-            "fallback": fallback,
-            "color": OPENED_COLOR,
-            "author_name": self.sender_name,
-            "author_icon": self.sender_avatar,
-            "author_link": self.sender_url,
-            "title": "#{self.number} {self.title}".format(self=self),
-            "title_link": self.url,
-            "text": preview,
-            "fields": [
-                {"short": True,
-                 "title": "Author",
-                 "value": self.sender_name},
                 {"short": True,
                  "title": "Assignee",
                  "value": self.assignee_name},
@@ -292,11 +258,8 @@ class PullRequest(Payload):
             "author_link": self.sender_url,
             "title": "#{self.number} {self.title}".format(self=self),
             "title_link": self.url,
-            "text": preview,
+            "text": "Re-Opened Pull Request",
             "fields": [
-                {"short": True,
-                 "title": "Author",
-                 "value": self.sender_name},
                 {"short": True,
                  "title": "Assignee",
                  "value": self.assignee_name},
@@ -319,10 +282,8 @@ class PullRequest(Payload):
             "author_link": self.sender_url,
             "title": "#{self.number} {self.title}".format(self=self),
             "title_link": self.url,
+            "text": "Assigned Pull Request",
             "fields": [
-                {"short": True,
-                 "title": "Author",
-                 "value": self.sender_name},
                 {"short": True,
                  "title": "Assignee",
                  "value": self.assignee_name},
@@ -344,6 +305,7 @@ class PullRequest(Payload):
             "author_link": self.sender_url,
             "title": "#{self.number} {self.title}".format(self=self),
             "title_link": self.url,
+            "text": "Closed Pull Request: {self.action}".format(self=self),
             "fields": [
                 {"short": True,
                  "title": "Author",
