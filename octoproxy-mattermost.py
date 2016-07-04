@@ -71,26 +71,6 @@ class Payload(object):
     @property
     def sender_url(self):
         return self.data["sender"]["html_url"]
-
-    @property
-    def assignee_name(self):
-        if self.data["issue"].get('assignee'):
-            return self.data["issue"]["assignee"]["login"]
-        else:
-            return "(Nobody)"
-
-    @property
-    def assignee_avatar(self):
-        if self.data["issue"].get('assignee'):
-            return self.data["issue"]["assignee"]["avatar_url"] + "&s=18"
-        else:
-            return ""
-
-    @property
-    def assignee_url(self):
-        if self.data["issue"].get('assignee'):
-            return self.data["issue"]["assignee"]["html_url"]
-        else:
             return ""
 
     @property
@@ -147,6 +127,27 @@ class IssueComment(Payload):
     def url(self):
         return self.data["comment"]["html_url"]
 
+    @property
+    def assignee_name(self):
+        if self.data["issue"].get('assignee'):
+            return self.data["issue"]["assignee"]["login"]
+        else:
+            return "(Nobody)"
+
+    @property
+    def assignee_avatar(self):
+        if self.data["issue"].get('assignee'):
+            return self.data["issue"]["assignee"]["avatar_url"] + "&s=18"
+        else:
+            return ""
+
+    @property
+    def assignee_url(self):
+        if self.data["issue"].get('assignee'):
+            return self.data["issue"]["assignee"]["html_url"]
+        else:
+            return ""
+
     @add_payload_boilerplate
     def created(self):
         preview = self.preview(self.body)
@@ -196,6 +197,27 @@ class PullRequest(Payload):
     @property
     def url(self):
         return self.data["pull_request"]["html_url"]
+
+    @property
+    def assignee_name(self):
+        if self.data["pull_request"].get('assignee'):
+            return self.data["pull_request"]["assignee"]["login"]
+        else:
+            return "(Nobody)"
+
+    @property
+    def assignee_avatar(self):
+        if self.data["pull_request"].get('assignee'):
+            return self.data["pull_request"]["assignee"]["avatar_url"] + "&s=18"
+        else:
+            return ""
+
+    @property
+    def assignee_url(self):
+        if self.data["pull_request"].get('assignee'):
+            return self.data["pull_request"]["assignee"]["html_url"]
+        else:
+            return ""
 
     @property
     def action(self):
