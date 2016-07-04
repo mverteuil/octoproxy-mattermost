@@ -7,8 +7,8 @@ import octoproxy
 if bool(os.environ.get("DEBUG_ONLY", False)):
     from requests import post
 else:
-    def post(_, payload):
-        print payload
+    def post(*args, **kwargs):
+        print kwargs.get('json')
 
 
 MATTERMOST_WEBHOOK = os.environ.get("MATTERMOST_WEBHOOK")
