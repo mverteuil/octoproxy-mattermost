@@ -72,10 +72,6 @@ class Payload(object):
     def sender_url(self):
         return self.data["sender"]["html_url"]
 
-    @property
-    def labels(self):
-        return ", ".join(label.get("name") for label in self.data['issue'].get("labels", [{"name": "(None)"}]))
-
     @abc.abstractproperty
     def title(self):
         return NotImplemented
