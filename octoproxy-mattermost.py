@@ -90,7 +90,7 @@ class Payload(object):
 
     @property
     def labels(self):
-        return ", ".join(label.get("name") for label in self.data.get("labels"))
+        return ", ".join(label.get("name") for label in self.data.get("labels", []))
 
     @abc.abstractproperty
     def title(self):
