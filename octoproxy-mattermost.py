@@ -87,12 +87,6 @@ class Payload(object):
     def url(self):
         return NotImplemented
 
-    @property
-    def labels(self):
-        labels = self.data['issue'].get('labels') if self.data.get('issue') else self.data['pull_request'].get('labels')
-        labels = labels or [{"name": "(None)"}]
-        return ", ".join(label.get("name") for label in labels)
-
     def preview(self, text):
         if not text:
             return text
@@ -163,14 +157,6 @@ class IssueComment(Payload):
             "title": "#{self.number} {self.title}".format(self=self),
             "title_link": self.url,
             "text": preview,
-            "fields": [
-                {"short": True,
-                 "title": "Assignee",
-                 "value": self.assignee_name},
-                {"short": True,
-                 "title": "Labels",
-                 "value": self.labels},
-            ]
         }
 
 
@@ -194,6 +180,12 @@ class PullRequest(Payload):
     @property
     def url(self):
         return self.data["pull_request"]["html_url"]
+
+    @property
+    def labels(self):
+        labels = self.data['pull_request'].get('labels')
+        labels = labels or [{"name": "(None)"}]
+        return ", ".join(label.get("name") for label in labels)
 
     @property
     def assignee_name(self):
@@ -306,17 +298,6 @@ class PullRequest(Payload):
             "title": "#{self.number} {self.title}".format(self=self),
             "title_link": self.url,
             "text": "Closed Pull Request: {self.action}".format(self=self),
-            "fields": [
-                {"short": True,
-                 "title": "Author",
-                 "value": self.sender_name},
-                {"short": True,
-                 "title": "Assignee",
-                 "value": self.assignee_name},
-                {"short": True,
-                 "title": "Labels",
-                 "value": self.labels},
-            ]
         }
 
 
