@@ -1,22 +1,34 @@
 import abc
 import functools
 import os
+import time
 
 import octoproxy
 
 if not bool(os.environ.get("DEBUG_ONLY", False)):
-    from requests import post
+    from requests import raw_post
 else:
-    def post(*args, **kwargs):
+    def raw_post(*args, **kwargs):
         print kwargs.get('json')
 
 
+FLOOD_PROTECTION_WAIT = os.environ.get("OCTOPROXY_FLOOD_PROTECTION_WAIT", 1)
 MATTERMOST_WEBHOOK = os.environ.get("MATTERMOST_WEBHOOK")
 SHOW_AVATARS = bool(os.environ.get("SHOW_AVATARS", True))
 OPENED_COLOR = os.environ.get("OCTOPROXY_OPENED_COLOR", "#F86864")
 ASSIGNED_COLOR = os.environ.get("OCTOPROXY_ASSIGNED_COLOR", "#F8A864")
 COMMENTED_COLOR = os.environ.get("OCTOPROXY_COMMENTED_COLOR", "#3D9296")
 MERGED_COLOR = os.environ.get("OCTOPROXY_MERGED_COLOR", "#4EC356")
+
+
+last_delivery = time.time()
+
+
+def post(*args, **kwargs):
+    if time.time() - last_delivery > FLOOD_PROTECTION_WAIT:
+        raw_post(*args, **kwargs)
+    else:
+        print('Flood Protection Activated. Not Delivering:\n{}\n{}'.format(args, kwargs))
 
 
 def add_payload_boilerplate(f):
