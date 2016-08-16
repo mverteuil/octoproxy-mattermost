@@ -6,7 +6,7 @@ import time
 import octoproxy
 
 if not bool(os.environ.get("DEBUG_ONLY", False)):
-    from requests import raw_post
+    from requests import post as raw_post
 else:
     def raw_post(*args, **kwargs):
         print kwargs.get('json')
